@@ -1,0 +1,381 @@
+# Calculate effect sizes from contingency tables and precomputed correlations
+library(dplyr)
+
+# Set working directory
+if (interactive()) {
+  script_dir <- dirname(rstudioapi::getActiveDocumentContext()$path)
+  setwd(script_dir)
+}
+
+data_dir <- "../Data"
+
+cat("=============================================================================\n")
+cat("EFFECT SIZE CALCULATIONS\n")
+cat("=============================================================================\n\n")
+
+# =============================================================================
+# 2-way S/IS Analysis
+# =============================================================================
+
+cat("2-WAY SECURE/INSECURE ANALYSIS\n")
+cat(paste(rep("-", 80), collapse = ""), "\n")
+
+df_2way_sis <- read.csv(file.path(data_dir, "data_2way_sis.csv"))
+
+# Calculate effect sizes
+df_2way_sis <- df_2way_sis %>%
+  mutate(
+    # Convert to numeric to avoid integer overflow with large cell values (e.g., Groh studies)
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    # Calculate r from contingency table if not precomputed
+    # Convert cells to numeric to avoid integer overflow with large samples
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    r = ifelse(!is.na(r), r, {
+      # Phi coefficient: (ad - bc) / sqrt((a+b)(c+d)(a+c)(b+d))
+      ad <- cell_11 * cell_22
+      bc <- cell_12 * cell_21
+      numerator <- ad - bc
+      denominator <- sqrt((cell_11 + cell_12) * (cell_21 + cell_22) * 
+                          (cell_11 + cell_21) * (cell_12 + cell_22))
+      ifelse(denominator > 0, numerator / denominator, NA)
+    }),
+    # Fisher's z transformation
+    fisher_z = 0.5 * log((1 + r) / (1 - r)),
+    z = fisher_z,  # Keep both names for compatibility
+    # Variance of z
+    var_z = 1 / (n - 3)
+  ) %>%
+  filter(!is.na(fisher_z))
+
+cat(sprintf("  Calculated effect sizes for %d samples\n", nrow(df_2way_sis)))
+cat(sprintf("  Mean r = %.3f, SD = %.3f\n", mean(df_2way_sis$r, na.rm = TRUE), 
+            sd(df_2way_sis$r, na.rm = TRUE)))
+
+# Add columns for meta-analysis and moderators
+df_2way_sis <- df_2way_sis %>%
+  mutate(
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    t2_measure = measure_type,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  )
+
+write.csv(df_2way_sis, file.path(data_dir, "data_2way_sis_es.csv"), row.names = FALSE)
+cat("  ✓ Saved: data_2way_sis_es.csv\n\n")
+
+# =============================================================================
+# 2-way O/D Analysis
+# =============================================================================
+
+cat("2-WAY ORGANIZED/DISORGANIZED ANALYSIS\n")
+cat(paste(rep("-", 80), collapse = ""), "\n")
+
+df_2way_od <- read.csv(file.path(data_dir, "data_2way_od.csv"))
+
+df_2way_od <- df_2way_od %>%
+  mutate(
+    # Convert to numeric to avoid integer overflow with large cell values (e.g., Groh studies)
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    # Calculate r from contingency table if not precomputed
+    # Convert cells to numeric to avoid integer overflow with large samples
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    r = ifelse(!is.na(r), r, {
+      ad <- cell_11 * cell_22
+      bc <- cell_12 * cell_21
+      numerator <- ad - bc
+      denominator <- sqrt((cell_11 + cell_12) * (cell_21 + cell_22) * 
+                          (cell_11 + cell_21) * (cell_12 + cell_22))
+      # If denominator is 0, set r to 0 (no association due to zero marginal)
+      ifelse(denominator > 0, numerator / denominator, 0)
+    }),
+    # Fisher's z transformation, handling r=0 and r=±1
+    fisher_z = ifelse(abs(r) >= 0.9999, sign(r) * 3, 0.5 * log((1 + r) / (1 - r))),
+    z = fisher_z,
+    var_z = 1 / (n - 3)
+  ) %>%
+  filter(!is.na(fisher_z))
+
+cat(sprintf("  Calculated effect sizes for %d samples\n", nrow(df_2way_od)))
+cat(sprintf("  Mean r = %.3f, SD = %.3f\n", mean(df_2way_od$r, na.rm = TRUE), 
+            sd(df_2way_od$r, na.rm = TRUE)))
+
+# Add columns for meta-analysis and moderators
+df_2way_od <- df_2way_od %>%
+  mutate(
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    t2_measure = measure_type,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  )
+
+write.csv(df_2way_od, file.path(data_dir, "data_2way_od_es.csv"), row.names = FALSE)
+cat("  ✓ Saved: data_2way_od_es.csv\n\n")
+
+# =============================================================================
+# 3-way Analysis (Cohen's Kappa)
+# =============================================================================
+
+cat("3-WAY ANALYSIS\n")
+cat(paste(rep("-", 80), collapse = ""), "\n")
+
+df_3way <- read.csv(file.path(data_dir, "data_3way.csv"))
+
+# For 3-way, calculate Cohen's kappa from 3x3 contingency table
+df_3way <- df_3way %>%
+  mutate(
+    # Sum all contingency table cells for total n
+    n_total = cell_11 + cell_12 + cell_13 + cell_21 + cell_22 + cell_23 + cell_31 + cell_32 + cell_33,
+    # Observed agreement (diagonal)
+    p_o = (cell_11 + cell_22 + cell_33) / n_total,
+    # Expected agreement - marginal proportions
+    p_a_margin = (cell_11 + cell_12 + cell_13) / n_total,
+    p_a_observer = (cell_11 + cell_21 + cell_31) / n_total,
+    p_a_exp = p_a_margin * p_a_observer,
+    
+    p_b_margin = (cell_21 + cell_22 + cell_23) / n_total,
+    p_b_observer = (cell_12 + cell_22 + cell_32) / n_total,
+    p_b_exp = p_b_margin * p_b_observer,
+    
+    p_c_margin = (cell_31 + cell_32 + cell_33) / n_total,
+    p_c_observer = (cell_13 + cell_23 + cell_33) / n_total,
+    p_c_exp = p_c_margin * p_c_observer,
+    
+    p_e = p_a_exp + p_b_exp + p_c_exp,
+    # Kappa
+    kappa = (p_o - p_e) / (1 - p_e),
+    # Variance (Fleiss formula)
+    var_kappa = (p_o * (1 - p_o)) / (n_total * (1 - p_e)^2)
+  ) %>%
+  mutate(
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  ) %>%
+  select(author_year, subsample, year, n, measures_used, parent_risk, child_risk, 
+         sample_type, kappa, var_kappa, n_total, study_group, sample_subsample,
+         adult_age_yr, infant_age_mo, measure_type, country_binary, age_t1, age_t2,
+         sample_risk_binary, prior_meta_binary, assessment_interval, published_binary, year_continuous) %>%
+  filter(!is.na(kappa))
+
+cat(sprintf("  Calculated effect sizes for %d samples\n", nrow(df_3way)))
+cat(sprintf("  Mean κ = %.3f, SD = %.3f\n", mean(df_3way$kappa, na.rm = TRUE), 
+            sd(df_3way$kappa, na.rm = TRUE)))
+
+write.csv(df_3way, file.path(data_dir, "data_3way_es.csv"), row.names = FALSE)
+cat("  ✓ Saved: data_3way_es.csv\n\n")
+
+# =============================================================================
+# 4-way Analysis (Cohen's Kappa)
+# =============================================================================
+
+cat("4-WAY ANALYSIS\n")
+cat(paste(rep("-", 80), collapse = ""), "\n")
+
+df_4way <- read.csv(file.path(data_dir, "data_4way.csv"))
+
+# For 4-way, calculate Cohen's kappa from 4x4 contingency table
+df_4way <- df_4way %>%
+  mutate(
+    # Sum all contingency table cells for total n
+    n_total = cell_11 + cell_12 + cell_13 + cell_14 + cell_21 + cell_22 + cell_23 + cell_24 +
+              cell_31 + cell_32 + cell_33 + cell_34 + cell_41 + cell_42 + cell_43 + cell_44,
+    # Observed agreement (diagonal)
+    p_o = (cell_11 + cell_22 + cell_33 + cell_44) / n_total,
+    # Expected agreement - marginal proportions
+    p_a_margin = (cell_11 + cell_12 + cell_13 + cell_14) / n_total,
+    p_a_observer = (cell_11 + cell_21 + cell_31 + cell_41) / n_total,
+    p_a_exp = p_a_margin * p_a_observer,
+    
+    p_b_margin = (cell_21 + cell_22 + cell_23 + cell_24) / n_total,
+    p_b_observer = (cell_12 + cell_22 + cell_32 + cell_42) / n_total,
+    p_b_exp = p_b_margin * p_b_observer,
+    
+    p_c_margin = (cell_31 + cell_32 + cell_33 + cell_34) / n_total,
+    p_c_observer = (cell_13 + cell_23 + cell_33 + cell_43) / n_total,
+    p_c_exp = p_c_margin * p_c_observer,
+    
+    p_d_margin = (cell_41 + cell_42 + cell_43 + cell_44) / n_total,
+    p_d_observer = (cell_14 + cell_24 + cell_34 + cell_44) / n_total,
+    p_d_exp = p_d_margin * p_d_observer,
+    
+    p_e = p_a_exp + p_b_exp + p_c_exp + p_d_exp,
+    # Kappa
+    kappa = (p_o - p_e) / (1 - p_e),
+    # Variance (Fleiss formula)
+    var_kappa = (p_o * (1 - p_o)) / (n_total * (1 - p_e)^2)
+  ) %>%
+  mutate(
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  ) %>%
+  select(author_year, subsample, year, n, measures_used, parent_risk, child_risk, 
+         sample_type, kappa, var_kappa, n_total, study_group, sample_subsample,
+         adult_age_yr, infant_age_mo, measure_type, country_binary, age_t1, age_t2,
+         sample_risk_binary, prior_meta_binary, assessment_interval, published_binary, year_continuous) %>%
+  filter(!is.na(kappa))
+
+cat(sprintf("  Calculated effect sizes for %d samples\n", nrow(df_4way)))
+cat(sprintf("  Mean κ = %.3f, SD = %.3f\n", mean(df_4way$kappa, na.rm = TRUE), 
+            sd(df_4way$kappa, na.rm = TRUE)))
+
+write.csv(df_4way, file.path(data_dir, "data_4way_es.csv"), row.names = FALSE)
+cat("  ✓ Saved: data_4way_es.csv\n\n")
+
+# =============================================================================
+# SSP-only and AQS-only
+# =============================================================================
+
+cat("SSP-ONLY AND AQS-ONLY ANALYSES\n")
+cat(paste(rep("-", 80), collapse = ""), "\n")
+
+# SSP-only uses 2-way S/IS data
+df_ssp_only <- read.csv(file.path(data_dir, "data_ssp_only.csv")) %>%
+  mutate(
+    # Convert cells to numeric to avoid integer overflow with large samples
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    r = ifelse(!is.na(r), r, {
+      ad <- cell_11 * cell_22
+      bc <- cell_12 * cell_21
+      numerator <- ad - bc
+      denominator <- sqrt((cell_11 + cell_12) * (cell_21 + cell_22) * 
+                          (cell_11 + cell_21) * (cell_12 + cell_22))
+      ifelse(denominator > 0, numerator / denominator, NA)
+    }),
+    fisher_z = 0.5 * log((1 + r) / (1 - r)),
+    z = fisher_z,
+    var_z = 1 / (n - 3)
+  ) %>%
+  filter(!is.na(fisher_z))
+
+# Add columns for meta-analysis and moderators
+df_ssp_only <- df_ssp_only %>%
+  mutate(
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    t2_measure = measure_type,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  )
+
+write.csv(df_ssp_only, file.path(data_dir, "data_ssp_only_es.csv"), row.names = FALSE)
+cat(sprintf("  SSP-only: %d samples\n", nrow(df_ssp_only)))
+
+# AQS-only uses 2-way S/IS data
+df_aqs_only <- read.csv(file.path(data_dir, "data_aqs_only.csv")) %>%
+  mutate(
+    # Convert cells to numeric to avoid integer overflow with large samples
+    cell_11 = as.numeric(cell_11),
+    cell_12 = as.numeric(cell_12),
+    cell_21 = as.numeric(cell_21),
+    cell_22 = as.numeric(cell_22),
+    r = ifelse(!is.na(r), r, {
+      ad <- cell_11 * cell_22
+      bc <- cell_12 * cell_21
+      numerator <- ad - bc
+      denominator <- sqrt((cell_11 + cell_12) * (cell_21 + cell_22) * 
+                          (cell_11 + cell_21) * (cell_12 + cell_22))
+      ifelse(denominator > 0, numerator / denominator, NA)
+    }),
+    fisher_z = 0.5 * log((1 + r) / (1 - r)),
+    z = fisher_z,
+    var_z = 1 / (n - 3),
+    study_group = as.numeric(as.factor(author)),
+    author_year = paste0(author, " (", year, ")"),
+    sample_subsample = subsample,
+    adult_age_yr = adult_age_years,
+    infant_age_mo = infant_age_months,
+    measure_type = ifelse(grepl("SSP", measures_used), "SSP", "AQS"),
+    # Moderator variables
+    country_binary = ifelse(country == "USA", 0, 1),  # 0=USA, 1=Other
+    age_t1 = infant_age_mo,
+    age_t2 = adult_age_yr,
+    t2_measure = measure_type,
+    sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
+    prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
+    assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
+    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    year_continuous = year
+  ) %>%
+  filter(!is.na(fisher_z))
+
+write.csv(df_aqs_only, file.path(data_dir, "data_aqs_only_es.csv"), row.names = FALSE)
+cat(sprintf("  AQS-only: %d samples\n", nrow(df_aqs_only)))
+
+cat("\n=============================================================================\n")
+cat("✓ Effect size calculations complete!\n")
+cat("=============================================================================\n\n")
