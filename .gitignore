@@ -1,10 +1,2 @@
-*.tiff
-*.png
-*.RData
-*.txt
-*_results.csv
-*_summary.csv
-*_statistics.csv
-*moderators.csv
 Data/
 .DS_Store

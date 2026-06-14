@@ -1,0 +1,8 @@
+"Moderator","Variable","N","b_coefficient","SE","p_value","CI_lower","CI_upper"
+"year","year_continuous",12,-0.012929,0.009219,0.278109,-0.047386,0.021528
+"country","country_binary",12,-0.170527,0.110552,0.255588,-0.619766,0.278711
+"age_t1","age_t1",12,-0.006641,0.006435,0.450846,-0.051398,0.038115
+"age_t2","age_t2",12,0.007914,0.026162,0.803081,-0.184127,0.199954
+"sample_risk","sample_risk_binary",12,0.015623,0.162807,0.928314,-0.442454,0.4737
+"assessment_interval","assessment_interval",12,0.00092,0.002459,0.752985,-0.013231,0.015072
+"published","published_binary",12,0.224903,0.158082,0.230032,-0.219496,0.669302

@@ -1,0 +1,46 @@
+=============================================================================
+META-ANALYSIS: 2-WAY SECURE/INSECURE ATTACHMENT CONTINUITY
+Infant/Child to Adult Attachment (SSP/AQS → AAI)
+=============================================================================
+
+SAMPLE CHARACTERISTICS
+----------------------
+Number of samples: 26
+Number of independent studies: 15
+Total participants: 1896
+Mean time lag: 17.9 years (SD = 3.9)
+
+OVERALL EFFECT
+--------------
+Pooled r: 0.100 [-0.024, 0.221]
+Fisher's z: 0.100 (SE = 0.058)
+p-value: 0.1057 
+df: 13.4
+
+HETEROGENEITY
+-------------
+Tau-squared: 0.0338
+I-squared: 77.21%
+
+PUBLICATION BIAS
+----------------
+Egger's test p-value (published only): 0.4522 
+N published studies tested: 13
+
+SENSITIVITY ANALYSIS (rho)
+--------------------------
+                           Rho = 0 Rho = 0.2 Rho = 0.4 Rho = 0.6 Rho = 0.8
+1 X.Intercept. Coefficient  0.1002    0.1002    0.1002    0.1002    0.1002
+2               Std. Error  0.0578    0.0578    0.0578    0.0578    0.0578
+3       Tau.sq    Estimate  0.0335    0.0336    0.0336    0.0337    0.0338
+  Rho = 1
+1  0.1002
+2  0.0578
+3  0.0338
+
+MODERATOR ANALYSES
+------------------
+Comprehensive moderator analyses (9 moderators) are reported separately in:
+  ../Output/moderator_summary.txt
+
+=============================================================================

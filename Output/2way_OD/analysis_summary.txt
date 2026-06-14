@@ -1,0 +1,47 @@
+=============================================================================
+META-ANALYSIS: 2-WAY ORGANIZED/DISORGANIZED ATTACHMENT CONTINUITY
+Infant/Child to Adult Attachment (SSP/AQS → AAI)
+=============================================================================
+
+SAMPLE CHARACTERISTICS
+----------------------
+Number of samples: 13
+Number of independent studies: 7
+Total participants: 2691
+Mean time lag: 18.7 years (SD = 4.0)
+
+OVERALL EFFECT
+--------------
+Pooled r: 0.023 [-0.077, 0.123]
+Fisher's z: 0.023 (SE = 0.025)
+p-value: 0.4407 
+df: 2.1
+
+HETEROGENEITY
+-------------
+Tau-squared: 0.0000
+I-squared: 0.00%
+
+PUBLICATION BIAS
+----------------
+Egger's test p-value (published only): 0.4324 
+N published studies tested: 4
+
+SENSITIVITY ANALYSIS (rho)
+--------------------------
+                           Rho = 0 Rho = 0.2 Rho = 0.4 Rho = 0.6 Rho = 0.8
+1 X.Intercept. Coefficient  0.0233    0.0233    0.0233    0.0233    0.0233
+2               Std. Error  0.0247    0.0247    0.0247    0.0247    0.0247
+3       Tau.sq    Estimate  0.0000    0.0000    0.0000    0.0000    0.0000
+  Rho = 1
+1  0.0233
+2  0.0247
+3  0.0000
+
+MODERATOR ANALYSES
+------------------
+Comprehensive moderator analyses (9 moderators) are reported separately in:
+  ../Output/moderator_summary.txt
+
+
+=============================================================================

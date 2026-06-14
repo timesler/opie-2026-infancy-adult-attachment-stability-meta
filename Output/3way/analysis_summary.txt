@@ -1,0 +1,47 @@
+=============================================================================
+META-ANALYSIS: 3-WAY A/B/C ATTACHMENT CONTINUITY
+Infant/Child to Adult Attachment (SSP/AQS → AAI)
+=============================================================================
+
+SAMPLE CHARACTERISTICS
+----------------------
+Number of samples: 12
+Number of independent studies: 6
+Total participants: 2636
+Mean time lag: 17.9 years (SD = 3.5)
+
+OVERALL EFFECT
+--------------
+Pooled kappa: 0.111 [-0.070, 0.292]
+SE: 0.069
+p-value: 0.1737 
+df: 4.7
+
+HETEROGENEITY
+-------------
+Tau-squared: 0.0149
+I-squared: 75.61%
+
+PUBLICATION BIAS
+----------------
+Egger's test p-value (published only): 0.0498 *
+N published studies tested: 4
+
+SENSITIVITY ANALYSIS (rho)
+--------------------------
+                           Rho = 0 Rho = 0.2 Rho = 0.4 Rho = 0.6 Rho = 0.8
+1 X.Intercept. Coefficient  0.1102    0.1103    0.1105    0.1106    0.1107
+2               Std. Error  0.0689    0.0689    0.0690    0.0691    0.0691
+3       Tau.sq    Estimate  0.0146    0.0147    0.0148    0.0149    0.0149
+  Rho = 1
+1  0.1108
+2  0.0692
+3  0.0150
+
+MODERATOR ANALYSES
+------------------
+Comprehensive moderator analyses (9 moderators) are reported separately in:
+  ../Output/moderator_summary.txt
+
+
+=============================================================================

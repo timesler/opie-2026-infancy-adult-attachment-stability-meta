@@ -1,0 +1,7 @@
+"Moderator","Variable","N","b_coefficient","SE","p_value","CI_lower","CI_upper"
+"year","year_continuous",2,0.008169,0,NA,NA,NA
+"age_t1","age_t1",2,0.010892,0,NA,NA,NA
+"age_t2","age_t2",2,-0.010892,0,NA,NA,NA
+"prior_meta","prior_meta_binary",2,-0.130709,0,NA,NA,NA
+"assessment_interval","assessment_interval",2,-0.000838,0,NA,NA,NA
+"published","published_binary",2,0.130709,0,NA,NA,NA
