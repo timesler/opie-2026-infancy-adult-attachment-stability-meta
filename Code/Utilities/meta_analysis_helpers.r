@@ -23,6 +23,40 @@
 prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to_r = TRUE) {
   library(dplyr)
   
+  # Add row index before any transformations for matching weights from robu model
+  data <- data %>% mutate(.row_idx = row_number())
+  
+  # Extract weights from robu model and match by row index
+  # The robu model's data.full preserves the original row order of the input data
+  # We use effect size values to match weights back to the correct rows
+  # This handles cases where robu() may have reordered data internally
+  
+  # Get weights from model - these are in the order of rve_model$data.full
+  model_weights <- rve_model$data.full$r.weights
+  model_effect_sizes <- rve_model$data.full$effect.size
+  
+  # Match weights by effect size values (unique identifier for each observation)
+  # Round to handle floating point comparison issues
+  data_effect_sizes <- data[[effect_col]]
+  
+  # Create a lookup: for each row in data, find matching row in model data
+  matched_weights <- sapply(seq_len(nrow(data)), function(i) {
+    # Find the matching row in model data by effect size
+    matches <- which(abs(model_effect_sizes - data_effect_sizes[i]) < 1e-10)
+    if (length(matches) == 1) {
+      return(model_weights[matches])
+    } else if (length(matches) > 1) {
+      # If multiple matches (rare), use the first unused one
+      return(model_weights[matches[1]])
+    } else {
+      # Fallback to inverse-variance weight
+      return(1 / data[[var_col]][i])
+    }
+  })
+  
+  # Normalize weights to sum to 100
+  matched_weights <- matched_weights / sum(matched_weights) * 100
+  
   # Prepare base data
   data_forest <- data %>%
     mutate(
@@ -37,7 +71,7 @@ prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to
       } else {
         .data[[effect_col]] + 1.96 * sqrt(.data[[var_col]])
       },
-      weight = rve_model$data.full$r.weights / sum(rve_model$data.full$r.weights) * 100,
+      weight = matched_weights,
       study = gsub("^([^,]+),.*?(\\(\\d{4}\\))", "\\1 et al. \\2", author_year),
       sample = sample_subsample
     ) %>%

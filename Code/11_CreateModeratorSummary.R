@@ -108,11 +108,16 @@ for (analysis_type in analyses) {
     ci_l <- mod_row$CI_lower
     ci_u <- mod_row$CI_upper
     
-    # Significance marker
-    sig <- ifelse(p < 0.001, "***",
-                  ifelse(p < 0.01, "**",
-                         ifelse(p < 0.05, "*",
-                                ifelse(p < 0.10, "+", ""))))
+    # Significance marker (NA-safe: moderators that cannot be estimated,
+    # e.g. analyses with too few samples such as AQS-only, yield NA p-values)
+    sig <- if (is.na(p)) {
+      ""
+    } else {
+      ifelse(p < 0.001, "***",
+             ifelse(p < 0.01, "**",
+                    ifelse(p < 0.05, "*",
+                           ifelse(p < 0.10, "+", ""))))
+    }
     
     # Print moderator name and counts
     cat(sprintf("\n%d. %s%s\n", which(moderators_order == mod_name), 
@@ -205,8 +210,10 @@ for (analysis_type in analyses) {
       cat(sprintf("   Effect: %s\n", direction_text))
     }
     
-    # Interpretation
-    if (p < 0.05) {
+    # Interpretation (NA-safe)
+    if (is.na(p)) {
+      cat(sprintf("   Not estimable (insufficient samples)\n"))
+    } else if (p < 0.05) {
       if (b > 0) {
         cat(sprintf("   ✓ SIGNIFICANT positive effect\n"))
       } else {

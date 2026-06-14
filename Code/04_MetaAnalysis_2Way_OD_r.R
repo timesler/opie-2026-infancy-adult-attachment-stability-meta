@@ -186,14 +186,30 @@ cat("\n\nSTEP 5: Loading moderator results from comprehensive analysis...\n")
 
 cat("\n\nSTEP 6: Creating forest plot...\n")
 
-# Prepare data for forest plot - following Opie2019 approach
+# Prepare data for forest plot - using RVE weights for accuracy
+# Match weights from RVE model by effect size values to handle potential reordering
+model_weights <- rve_model$data.full$r.weights
+model_effect_sizes <- rve_model$data.full$effect.size
+data_effect_sizes <- data$es
+
+# Match weights by effect size values (unique identifier for each observation)
+matched_weights <- sapply(seq_len(nrow(data)), function(i) {
+  matches <- which(abs(model_effect_sizes - data_effect_sizes[i]) < 1e-10)
+  if (length(matches) >= 1) {
+    return(model_weights[matches[1]])
+  } else {
+    return(1 / data$var_es[i])  # Fallback to inverse-variance
+  }
+})
+matched_weights <- matched_weights / sum(matched_weights) * 100
+
 data_forest <- data %>%
   mutate(
     # Convert back to r for display
     r_display = tanh(es),
     ci_lower = tanh(es - 1.96 * sqrt(var_es)),
     ci_upper = tanh(es + 1.96 * sqrt(var_es)),
-    weight = (1 / var_es) / sum(1 / var_es) * 100,
+    weight = matched_weights,
     study = gsub("^([^,(&]+).*?(\\(\\d{4}\\))", "\\1 \\2", author_year),
     sample = sample_subsample,
     n_total = n  # Copy n to n_total for consistency with header rows

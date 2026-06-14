@@ -1,4 +1,5 @@
 *.tiff
+*.png
 *.RData
 *.txt
 *_results.csv
