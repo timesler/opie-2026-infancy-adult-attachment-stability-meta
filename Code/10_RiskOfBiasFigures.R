@@ -167,8 +167,8 @@ sm <- sm +
   ggplot2::scale_x_discrete(labels = domain_short) +
   ggplot2::theme(
   text         = ggplot2::element_text(size = 18),
-  axis.text.x  = ggplot2::element_text(size = 12),  # 0%-100% percent tick labels
-  axis.text.y  = ggplot2::element_text(size = 20),  # D1-D7 / Overall row labels
+  axis.text.x  = ggplot2::element_text(size = 16),  # 0%-100% percent tick labels
+  axis.text.y  = ggplot2::element_text(size = 18),  # D1-D7 / Overall row labels
   axis.title   = ggplot2::element_text(size = 18),
   legend.text  = ggplot2::element_text(size = 16),
   legend.title = ggplot2::element_blank()      # drop the "judgement" legend title
