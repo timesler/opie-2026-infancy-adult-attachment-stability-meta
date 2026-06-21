@@ -114,13 +114,19 @@ tl <- rob_traffic_light(
   psize   = 13          # larger glyphs / in-cell symbols
 )
 tl <- relabel_legend(tl)
+# In the traffic-light, the in-table text is drawn as facet-strip text:
+#   strip.text.x       -> column headers (D1-D7, Overall)
+#   strip.text.y.left  -> study names (author (year))
+# and the two axis titles ("Risk of bias domains", "Study") come from
+# axis.title. Enlarge the strip text and drop the axis titles.
 tl <- tl + ggplot2::theme(
-  text          = ggplot2::element_text(size = 18),
-  axis.text     = ggplot2::element_text(size = 20),
-  axis.title    = ggplot2::element_text(size = 18),
-  legend.text   = ggplot2::element_text(size = 16),
-  legend.title  = ggplot2::element_blank(),   # drop the "judgement" legend title
-  plot.caption  = ggplot2::element_text(size = 14)
+  text              = ggplot2::element_text(size = 18),
+  axis.title        = ggplot2::element_blank(),  # remove "Study" / "Risk of bias domains"
+  strip.text.x      = ggplot2::element_text(size = 18),
+  strip.text.y.left = ggplot2::element_text(size = 18, angle = 0),
+  legend.text       = ggplot2::element_text(size = 16),
+  legend.title      = ggplot2::element_blank(),  # drop the "judgement" legend title
+  plot.caption      = ggplot2::element_text(size = 14)
 )
 ggplot2::ggsave(
   filename = file.path(fig_dir, "risk_of_bias_traffic_light.png"),
