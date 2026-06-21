@@ -1,0 +1,138 @@
+# ==============================================================================
+# 10_RiskOfBiasFigures.R
+# Generates the two ROBINS-E risk-of-bias figures (traffic-light + summary)
+# from "Risk of bias assessment - Sheet1.csv" using the robvis package.
+#
+# The assessment uses a custom 4-level judgement vocabulary:
+#   Low  <  Some concern  <  Concern  <  High
+# mapped to green / yellow / red / dark-red respectively.
+#
+# Run from the Code/ directory (paths are relative to it), e.g.:
+#   Rscript 10_RiskOfBiasFigures.R
+# ==============================================================================
+
+suppressPackageStartupMessages({
+  library(robvis)
+  library(dplyr)
+})
+
+# ----- Locate input/output relative to this script (Code/) --------------------
+rob_csv  <- "../Risk of bias assessment - Sheet1.csv"
+fig_dir  <- "../Figures"
+if (!dir.exists(fig_dir)) dir.create(fig_dir, recursive = TRUE)
+
+# ----- Read and reshape the assessment ---------------------------------------
+# The CSV stores each cell as "<Label>\n<score>"; we keep only the label and
+# coerce it to the judgement vocabulary expected by the figures.
+raw <- read.csv(rob_csv, check.names = FALSE, stringsAsFactors = FALSE)
+
+# First token (before the newline) of each cell is the judgement label.
+first_line <- function(x) trimws(sub("\n.*$", "", x))
+
+domain_cols <- grep("^Domain", names(raw), value = TRUE)
+stopifnot(length(domain_cols) == 7L)
+
+rob <- data.frame(
+  Study = first_line(raw[["Author (year)"]]),
+  stringsAsFactors = FALSE
+)
+for (i in seq_along(domain_cols)) {
+  rob[[paste0("D", i)]] <- first_line(raw[[domain_cols[i]]])
+}
+rob[["Overall"]] <- first_line(raw[["Overall risk score"]])
+
+# ----- Map the study's custom vocabulary onto the robvis ROBINS-E template ----
+# The ROBINS-E template internally uses five judgement levels
+#   (Low, Some concerns, High, Very high, No information).
+# This assessment uses a four-level scheme (Low < Some concern < Concern < High)
+# which the original figures expressed by relabelling the template levels:
+#   Low          -> "Low"            (green)
+#   Some concern -> "Some concerns"  (yellow)
+#   Concern      -> "High"           (red)       [legend shown as "Concern"]
+#   High         -> "Very high"      (dark red)  [legend shown as "High"]
+to_template <- c(
+  "Low"          = "Low",
+  "Some concern" = "Some concerns",
+  "Concern"      = "High",
+  "High"         = "Very high"
+)
+map_label <- function(x) {
+  x <- gsub("Some concerns", "Some concern", x, fixed = TRUE)  # guard plurals
+  unname(to_template[x])
+}
+rob[-1] <- lapply(rob[-1], map_label)
+stopifnot(!anyNA(unlist(rob[-1])))
+
+# ----- Colours for the 5 template levels (5th = "No information", unused) -----
+rob_colours <- c(
+  "#02C100",  # Low            -> green   (+)
+  "#E2DF07",  # Some concerns  -> yellow  (-)
+  "#BF0000",  # High           -> red     (x)
+  "#820000",  # Very high      -> dark red(!)
+  "#CCCCCC"   # No information  (unused here)
+)
+
+# Relabel legend text back to the study's vocabulary WITHOUT replacing the
+# fill scale (replacing it wipes robvis's internal colour mapping). We edit the
+# existing discrete fill scale's labels in place via a relabelling function.
+# Map both robvis's full judgement labels (traffic-light) AND its single-letter
+# internal codes (summary plot: l/s/h/v/n) to the study's display vocabulary.
+legend_relabel <- c(
+  "Low"            = "Low",
+  "Some concerns"  = "Some concern",
+  "High"           = "Concern",
+  "Very high"      = "High",
+  "No information" = "No information",
+  "l" = "Low",
+  "s" = "Some concern",
+  "h" = "Concern",
+  "v" = "High",
+  "n" = "No information"
+)
+# Applies to fill (summary bars) and colour/shape (traffic-light points), which
+# is where robvis stores the judgement legend labels for the two figure types.
+relabel_legend <- function(p) {
+  aes_to_fix <- c("fill", "colour", "color", "shape")
+  p$scales$scales <- lapply(p$scales$scales, function(sc) {
+    if (!is.null(sc$aesthetics) && any(sc$aesthetics %in% aes_to_fix)) {
+      sc$labels <- function(breaks) {
+        out <- unname(legend_relabel[as.character(breaks)])
+        out[is.na(out)] <- as.character(breaks)[is.na(out)]
+        out
+      }
+    }
+    sc
+  })
+  p
+}
+
+# ----- Traffic-light plot -----------------------------------------------------
+tl <- rob_traffic_light(
+  data    = rob,
+  tool    = "ROBINS-E",
+  colour  = rob_colours,
+  psize   = 10
+)
+tl <- relabel_legend(tl)
+ggplot2::ggsave(
+  filename = file.path(fig_dir, "risk_of_bias_traffic_light.png"),
+  plot = tl, width = 11, height = 7, dpi = 150, bg = "white"
+)
+
+# ----- Summary (stacked bar) plot --------------------------------------------
+sm <- rob_summary(
+  data     = rob,
+  tool     = "ROBINS-E",
+  colour   = rob_colours,
+  overall  = TRUE,
+  weighted = FALSE
+)
+sm <- relabel_legend(sm)
+ggplot2::ggsave(
+  filename = file.path(fig_dir, "risk_of_bias_summary.png"),
+  plot = sm, width = 10, height = 5, dpi = 150, bg = "white"
+)
+
+cat("Risk-of-bias figures written to", normalizePath(fig_dir), "\n")
+cat("Studies included:", nrow(rob), "\n")
+print(rob[, c("Study", "Overall")])
