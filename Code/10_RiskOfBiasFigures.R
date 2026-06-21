@@ -167,7 +167,7 @@ sm <- sm +
   ggplot2::theme(
   text         = ggplot2::element_text(size = 18),
   axis.text.x  = ggplot2::element_text(size = 22),  # D1-D7 / Overall row labels
-  axis.text.y  = ggplot2::element_text(size = 16),  # 0%-100% column labels
+  axis.text.y  = ggplot2::element_text(size = 9),   # 0%-100% column labels
   axis.title   = ggplot2::element_text(size = 18),
   legend.text  = ggplot2::element_text(size = 16),
   legend.title = ggplot2::element_blank()      # drop the "judgement" legend title
