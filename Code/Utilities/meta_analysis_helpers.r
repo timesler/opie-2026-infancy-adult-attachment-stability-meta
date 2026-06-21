@@ -87,9 +87,15 @@ prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to
     if (nrow(data.grp) > 1) {
       minID <- min(data.grp$ID)
       study_name <- data.grp$study[1]
-      # Indent sub-sample labels
+      # Move study-level symbols (*/^) onto the sample labels for multi-sample
+      # studies so the annotation is consistently shown on the sample, not the
+      # study header (single-sample studies keep the symbol on the author).
+      study_symbols <- regmatches(study_name, regexpr("[*^]+", study_name))
+      if (length(study_symbols) == 0) study_symbols <- ""
+      study_name <- trimws(gsub("[*^]+", "", study_name))
+      # Indent sub-sample labels (append symbols to each sample)
       indx <- data_forest$study_group == sg
-      data_forest$study[indx] <- paste0("        ", data_forest$sample[indx])
+      data_forest$study[indx] <- paste0("        ", data_forest$sample[indx], study_symbols)
       # Add header row
       header_row <- data.frame(
         study_group = sg,
@@ -152,7 +158,7 @@ create_forest_plot <- function(data_forest, output_file, main_title, xlab,
   
   # Prepare additional info columns
   ilab <- cbind(data_for_plot$n_total, format(round(data_for_plot$weight, 2), trim = FALSE))
-  ilab.xpos <- c(-1.9, -1.2)
+  ilab.xpos <- c(-1.8, -1.2)
   ilab.pos <- 2
   anno.pos <- 2.5
   
@@ -240,7 +246,7 @@ create_forest_plot <- function(data_forest, output_file, main_title, xlab,
 # =============================================================================
 
 add_pooled_effect_to_plot <- function(rve_model, n_total_rows, convert_to_r = TRUE,
-                                       cex = 1.5, anno.pos = 2.5, ilab.xpos = c(-1.9, -1.2)) {
+                                       cex = 1.5, anno.pos = 2.5, ilab.xpos = c(-1.8, -1.2)) {
   source("Utilities/forest.col.r")
   
   # Calculate pooled effect

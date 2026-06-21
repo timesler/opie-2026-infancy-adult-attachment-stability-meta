@@ -10,10 +10,10 @@ Samples: 26 | Studies: (see main analysis summary)
 
 
 1. year
-   b = -0.0078 (SE = 0.0047)
-   95% CI: [-0.0184, 0.0027]
-   p-value: 0.1279 
-   Effect: Recent publications show LOWER continuity (b=-0.0078)
+   b = -0.0085 (SE = 0.0048)
+   95% CI: [-0.0191, 0.0021]
+   p-value: 0.1056 
+   Effect: Recent publications show LOWER continuity (b=-0.0085)
    Non-significant
 
 2. country *
@@ -144,12 +144,12 @@ Samples: 13 | Studies: (see main analysis summary)
 Samples: 12 | Studies: (see main analysis summary)
 
 
-1. year
-   b = -0.0129 (SE = 0.0092)
-   95% CI: [-0.0474, 0.0215]
-   p-value: 0.2781 
-   Effect: Recent publications show LOWER continuity (b=-0.0129)
-   Non-significant
+1. year +
+   b = -0.0144 (SE = 0.0046)
+   95% CI: [-0.0298, 0.0009]
+   p-value: 0.0579 +
+   Effect: Recent publications show LOWER continuity (b=-0.0144)
+   ~ Marginal effect (p < .10)
 
 2. country
    USA: n=8, Other: n=4
@@ -264,12 +264,12 @@ SSP-ONLY (FISHER'S Z, R)
 Samples: 24 | Studies: (see main analysis summary)
 
 
-1. year
-   b = -0.0093 (SE = 0.0053)
-   95% CI: [-0.0212, 0.0026]
-   p-value: 0.1119 
-   Effect: Recent publications show LOWER continuity (b=-0.0093)
-   Non-significant
+1. year +
+   b = -0.0101 (SE = 0.0054)
+   95% CI: [-0.0222, 0.0020]
+   p-value: 0.0937 +
+   Effect: Recent publications show LOWER continuity (b=-0.0101)
+   ~ Marginal effect (p < .10)
 
 2. country *
    USA: n=10, Other: n=14

@@ -227,9 +227,15 @@ for (sg in unique(data_forest$study_group)) {
   if (nrow(data.grp) > 1) {
     minID <- min(data.grp$ID)
     study_name <- data.grp$study[1]
-    # Indent sub-sample labels for multi-sample studies only
+    # Move study-level symbols (*/^) onto the sample labels for multi-sample
+    # studies so the annotation is consistently shown on the sample, not the
+    # study header (single-sample studies keep the symbol on the author).
+    study_symbols <- regmatches(study_name, regexpr("[*^]+", study_name))
+    if (length(study_symbols) == 0) study_symbols <- ""
+    study_name <- trimws(gsub("[*^]+", "", study_name))
+    # Indent sub-sample labels for multi-sample studies only (append symbols)
     indx <- data_forest$study_group == sg
-    data_forest$study[indx] <- paste0("        ", data_forest$sample[indx])  # 8 spaces for sub-samples
+    data_forest$study[indx] <- paste0("        ", data_forest$sample[indx], study_symbols)  # 8 spaces for sub-samples
     # Add header row just before first sub-sample
     header_row <- data.frame(
       study_group = sg,
@@ -288,7 +294,7 @@ alim <- c(-1, 1)
 
 # Prepare additional info columns (only for data rows)
 ilab <- cbind(data_for_plot$n, format(round(data_for_plot$weight, 2), trim = FALSE))
-ilab.xpos <- c(-1.9, -1.2)  # Position for N and Weight columns
+ilab.xpos <- c(-1.8, -1.2)  # Position for N and Weight columns
 ilab.pos <- 2
 anno.pos <- 2.5  # Position for effect size and CI annotation
 

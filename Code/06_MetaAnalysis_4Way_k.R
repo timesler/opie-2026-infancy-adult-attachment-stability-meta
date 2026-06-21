@@ -208,7 +208,7 @@ forest.col(
   main = "4-Way A/B/C/D Attachment Continuity (Infancy to Adulthood)",
   slab = data_for_plot$study,
   ilab = ilab,
-  ilab.xpos = c(-1.9, -1.2),
+  ilab.xpos = c(-1.8, -1.2),
   ilab.pos = 2,
   rows = sampleRowPositions,
   efac = 0.4,
