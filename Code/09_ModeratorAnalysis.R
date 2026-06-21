@@ -70,6 +70,7 @@ run_moderator_analyses <- function(data, analysis_name, effect_size_var = "es",
     N = integer(),
     b_coefficient = numeric(),
     SE = numeric(),
+    df = numeric(),
     p_value = numeric(),
     CI_lower = numeric(),
     CI_upper = numeric(),
@@ -131,6 +132,7 @@ run_moderator_analyses <- function(data, analysis_name, effect_size_var = "es",
       # Extract results
       mod_coef <- mod_model$reg_table$b.r[2]
       mod_se <- mod_model$reg_table$SE[2]
+      mod_df <- mod_model$reg_table$dfs[2]
       mod_p <- mod_model$reg_table$prob[2]
       mod_ci_l <- mod_model$reg_table$CI.L[2]
       mod_ci_u <- mod_model$reg_table$CI.U[2]
@@ -151,6 +153,7 @@ run_moderator_analyses <- function(data, analysis_name, effect_size_var = "es",
         N = nrow(mod_data),
         b_coefficient = round(mod_coef, 6),
         SE = round(mod_se, 6),
+        df = round(mod_df, 4),
         p_value = round(mod_p, 6),
         CI_lower = round(mod_ci_l, 6),
         CI_upper = round(mod_ci_u, 6),
