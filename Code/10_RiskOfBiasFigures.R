@@ -158,16 +158,17 @@ domain_short <- c(
   "Bias in selection of the reported result"                                = "D7",
   "Overall risk of bias"                                                    = "Overall"
 )
-# Domains are on the x aesthetic (the plot is flipped via coord_flip, so they
-# appear as the rows). Named-vector labels match by value (order-safe).
-# After the flip: axis.text.x -> the domain row labels (D1-D7, Overall);
-#                 axis.text.y -> the percent column labels.
+# The domain factor is mapped to the x scale (so scale_x_discrete relabels the
+# D1-D7/Overall captions), but robvis renders the percent on the x AXIS and the
+# domain labels on the y AXIS. Verified empirically:
+#   axis.text.x -> the 0%-100% percent tick labels
+#   axis.text.y -> the D1-D7 / Overall row labels
 sm <- sm +
   ggplot2::scale_x_discrete(labels = domain_short) +
   ggplot2::theme(
   text         = ggplot2::element_text(size = 18),
-  axis.text.x  = ggplot2::element_text(size = 22),  # D1-D7 / Overall row labels
-  axis.text.y  = ggplot2::element_text(size = 9),   # 0%-100% column labels
+  axis.text.x  = ggplot2::element_text(size = 12),  # 0%-100% percent tick labels
+  axis.text.y  = ggplot2::element_text(size = 20),  # D1-D7 / Overall row labels
   axis.title   = ggplot2::element_text(size = 18),
   legend.text  = ggplot2::element_text(size = 16),
   legend.title = ggplot2::element_blank()      # drop the "judgement" legend title
