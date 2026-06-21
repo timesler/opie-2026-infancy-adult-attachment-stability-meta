@@ -126,7 +126,11 @@ tl <- tl + ggplot2::theme(
   strip.text.y.left = ggplot2::element_text(size = 18, angle = 0),
   legend.text       = ggplot2::element_text(size = 16),
   legend.title      = ggplot2::element_blank(),  # drop the "judgement" legend title
-  plot.caption      = ggplot2::element_text(size = 14)
+  # Push the "Domains:" caption block down so it clears the bottom table row.
+  plot.caption      = ggplot2::element_text(
+    size = 14,
+    margin = ggplot2::margin(t = 22, unit = "pt")
+  )
 )
 ggplot2::ggsave(
   filename = file.path(fig_dir, "risk_of_bias_traffic_light.png"),
@@ -154,13 +158,16 @@ domain_short <- c(
   "Bias in selection of the reported result"                                = "D7",
   "Overall risk of bias"                                                    = "Overall"
 )
-# Domains are on the x aesthetic (the plot is flipped). Named-vector labels
-# match by value, so the mapping is order-safe.
+# Domains are on the x aesthetic (the plot is flipped via coord_flip, so they
+# appear as the rows). Named-vector labels match by value (order-safe).
+# After the flip: axis.text.x -> the domain row labels (D1-D7, Overall);
+#                 axis.text.y -> the percent column labels.
 sm <- sm +
   ggplot2::scale_x_discrete(labels = domain_short) +
   ggplot2::theme(
   text         = ggplot2::element_text(size = 18),
-  axis.text    = ggplot2::element_text(size = 20),
+  axis.text.x  = ggplot2::element_text(size = 22),  # D1-D7 / Overall row labels
+  axis.text.y  = ggplot2::element_text(size = 16),  # 0%-100% column labels
   axis.title   = ggplot2::element_text(size = 18),
   legend.text  = ggplot2::element_text(size = 16),
   legend.title = ggplot2::element_blank()      # drop the "judgement" legend title
