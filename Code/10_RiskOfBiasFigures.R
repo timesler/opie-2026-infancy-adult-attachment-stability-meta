@@ -111,12 +111,20 @@ tl <- rob_traffic_light(
   data    = rob,
   tool    = "ROBINS-E",
   colour  = rob_colours,
-  psize   = 10
+  psize   = 13          # larger glyphs / in-cell symbols
 )
 tl <- relabel_legend(tl)
+tl <- tl + ggplot2::theme(
+  text          = ggplot2::element_text(size = 18),
+  axis.text     = ggplot2::element_text(size = 20),
+  axis.title    = ggplot2::element_text(size = 18),
+  legend.text   = ggplot2::element_text(size = 16),
+  legend.title  = ggplot2::element_blank(),   # drop the "judgement" legend title
+  plot.caption  = ggplot2::element_text(size = 14)
+)
 ggplot2::ggsave(
   filename = file.path(fig_dir, "risk_of_bias_traffic_light.png"),
-  plot = tl, width = 11, height = 7, dpi = 150, bg = "white"
+  plot = tl, width = 12, height = 8, dpi = 150, bg = "white"
 )
 
 # ----- Summary (stacked bar) plot --------------------------------------------
@@ -128,9 +136,32 @@ sm <- rob_summary(
   weighted = FALSE
 )
 sm <- relabel_legend(sm)
+# Use short domain codes (D1-D7, Overall) for the domain-axis row labels.
+# Domains are on the y aesthetic; map by full caption (name-based, order-safe).
+domain_short <- c(
+  "Bias due to confounding"                                                 = "D1",
+  "Bias arising from measurement of the exposure"                           = "D2",
+  "Bias in selection of participants into the study (or into the analysis)" = "D3",
+  "Bias due to post-exposure interventions"                                 = "D4",
+  "Bias due to missing data"                                                = "D5",
+  "Bias arising from measurement of the outcome"                            = "D6",
+  "Bias in selection of the reported result"                                = "D7",
+  "Overall risk of bias"                                                    = "Overall"
+)
+# Domains are on the x aesthetic (the plot is flipped). Named-vector labels
+# match by value, so the mapping is order-safe.
+sm <- sm +
+  ggplot2::scale_x_discrete(labels = domain_short) +
+  ggplot2::theme(
+  text         = ggplot2::element_text(size = 18),
+  axis.text    = ggplot2::element_text(size = 20),
+  axis.title   = ggplot2::element_text(size = 18),
+  legend.text  = ggplot2::element_text(size = 16),
+  legend.title = ggplot2::element_blank()      # drop the "judgement" legend title
+)
 ggplot2::ggsave(
   filename = file.path(fig_dir, "risk_of_bias_summary.png"),
-  plot = sm, width = 10, height = 5, dpi = 150, bg = "white"
+  plot = sm, width = 11, height = 6, dpi = 150, bg = "white"
 )
 
 cat("Risk-of-bias figures written to", normalizePath(fig_dir), "\n")
