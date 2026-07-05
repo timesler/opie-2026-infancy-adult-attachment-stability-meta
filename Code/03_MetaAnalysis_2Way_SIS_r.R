@@ -218,12 +218,20 @@ data_forest <- data %>%
     sample = sample_subsample,
     n_total = n  # Copy n to n_total for consistency with header rows
   ) %>%
-  # Calculate mean effect size per study for sorting
+  # Calculate mean effect size per study for sorting. Zournatzidis rows
+  # are independent study groups analytically, but should remain adjacent in
+  # forest plots at the position implied by their average effect size.
   group_by(study_group) %>%
   mutate(study_mean_r = mean(r_display)) %>%
   ungroup() %>%
-  # Sort by study mean effect size
-  arrange(study_mean_r, sample) %>%
+  mutate(
+    forest_sort_family = ifelse(grepl("^Zournatzidis", author_year), "Zournatzidis", as.character(study_group)),
+    forest_sort_es = ifelse(grepl("^Zournatzidis", author_year),
+                            mean(r_display[grepl("^Zournatzidis", author_year)], na.rm = TRUE),
+                            study_mean_r)
+  ) %>%
+  # Sort by study mean effect size, keeping independent Zournatzidis rows adjacent
+  arrange(forest_sort_es, forest_sort_family, sample) %>%
   mutate(ID = row_number())
 
 # Add header rows for studies with multiple samples (Opie2019 approach)

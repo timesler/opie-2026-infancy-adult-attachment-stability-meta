@@ -20,7 +20,7 @@
 #   Data frame sorted and formatted for forest plot with header rows
 # =============================================================================
 
-prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to_r = TRUE) {
+prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to_r = TRUE, strip_caret = FALSE) {
   library(dplyr)
   
   # Add row index before any transformations for matching weights from robu model
@@ -72,14 +72,33 @@ prepare_forest_data <- function(data, effect_col, var_col, rve_model, convert_to
         .data[[effect_col]] + 1.96 * sqrt(.data[[var_col]])
       },
       weight = matched_weights,
-      study = gsub("^([^,]+),.*?(\\(\\d{4}\\))", "\\1 et al. \\2", author_year),
+      # Robust display label: only collapse comma-form author strings to
+      # "First et al. (year)"; otherwise keep the full author_year label.
+      # Use an explicit branch for strip_caret (not ifelse) because strip_caret
+      # is length 1 and ifelse() would collapse the vector to its first element.
+      study_raw = ifelse(grepl(",", author_year),
+                     sub("^([^,]+),.*(\\(\\d{4}\\))$", "\\1 et al. \\2", author_year),
+                     author_year),
+      study = if (strip_caret) gsub("\\^", "", study_raw) else study_raw,
       sample = sample_subsample
     ) %>%
     group_by(study_group) %>%
     mutate(study_mean_es = mean(es_display)) %>%
     ungroup() %>%
-    arrange(study_mean_es, sample) %>%
+    mutate(
+      forest_sort_family = ifelse(grepl("^Zournatzidis", author_year), "Zournatzidis", as.character(study_group)),
+      forest_sort_es = ifelse(grepl("^Zournatzidis", author_year),
+                              mean(es_display[grepl("^Zournatzidis", author_year)], na.rm = TRUE),
+                              study_mean_es)
+    ) %>%
+    arrange(forest_sort_es, forest_sort_family, sample) %>%
     mutate(ID = row_number())
+  
+  # If requested, strip ^ from sample labels too. This is used for non-S/IS
+  # figures where ^ is not relevant to the plotted meta-analysis.
+  if (strip_caret) {
+    data_forest$sample <- gsub("\\^", "", data_forest$sample)
+  }
   
   # Add header rows for studies with multiple samples
   for (sg in unique(data_forest$study_group)) {

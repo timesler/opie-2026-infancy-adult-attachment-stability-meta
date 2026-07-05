@@ -167,7 +167,8 @@ data_forest <- prepare_forest_data(
   effect_col = "kappa",
   var_col = "var_kappa",
   rve_model = rve_model,
-  convert_to_r = FALSE  # Don't convert kappa
+  convert_to_r = FALSE,  # Don't convert kappa
+  strip_caret = TRUE
 )
 
 # Create forest plot

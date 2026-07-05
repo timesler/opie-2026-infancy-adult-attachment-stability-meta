@@ -6,16 +6,16 @@ Infant/Child to Adult Attachment (SSP/AQS → AAI)
 SAMPLE CHARACTERISTICS
 ----------------------
 Number of samples: 13
-Number of independent studies: 7
+Number of independent studies: 8
 Total participants: 2691
 Mean time lag: 18.7 years (SD = 4.0)
 
 OVERALL EFFECT
 --------------
-Pooled kappa: 0.004 [-0.033, 0.041]
-SE: 0.011
-p-value: 0.7302 
-df: 2.7
+Pooled kappa: 0.002 [-0.035, 0.039]
+SE: 0.012
+p-value: 0.8775 
+df: 3.0
 
 HETEROGENEITY
 -------------
@@ -24,18 +24,18 @@ I-squared: 0.00%
 
 PUBLICATION BIAS
 ----------------
-Egger's test p-value (published only): 0.1766 
+Egger's test p-value (published only): 0.3444 
 N published studies tested: 4
 
 SENSITIVITY ANALYSIS (rho)
 --------------------------
                            Rho = 0 Rho = 0.2 Rho = 0.4 Rho = 0.6 Rho = 0.8
-1 X.Intercept. Coefficient 0.00419   0.00419   0.00419   0.00419   0.00419
-2               Std. Error 0.01097   0.01097   0.01097   0.01097   0.01097
+1 X.Intercept. Coefficient 0.00196   0.00196   0.00196   0.00196   0.00196
+2               Std. Error 0.01173   0.01173   0.01173   0.01173   0.01173
 3       Tau.sq    Estimate 0.00000   0.00000   0.00000   0.00000   0.00000
   Rho = 1
-1 0.00419
-2 0.01097
+1 0.00196
+2 0.01173
 3 0.00000
 
 MODERATOR ANALYSES
