@@ -72,11 +72,11 @@ Samples: 26 | Studies: (see main analysis summary)
    Non-significant
 
 9. published
-   Unpublished/Other: n=13, Published article: n=13
-   b = 0.0502 (SE = 0.0942)
-   95% CI: [-0.1543, 0.2548]
-   p-value: 0.6032 
-   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0502)
+   Unpublished/Other: n=16, Published article: n=10
+   b = 0.0660 (SE = 0.0992)
+   95% CI: [-0.1512, 0.2833]
+   p-value: 0.5187 
+   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0660)
    Non-significant
 
 2-WAY ORGANIZED/DISORGANIZED (FISHER'S Z, R)
@@ -131,13 +131,13 @@ Samples: 13 | Studies: (see main analysis summary)
    Effect: Shorter follow-up intervals show HIGHER continuity (b=-0.0002)
    Non-significant
 
-9. published
-   Unpublished/Other: n=9, Published article: n=4
-   b = 0.0458 (SE = 0.0447)
-   95% CI: [-0.0763, 0.1679]
-   p-value: 0.3610 
-   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0458)
-   Non-significant
+9. published +
+   Unpublished/Other: n=11, Published article: n=2
+   b = 0.0620 (SE = 0.0299)
+   95% CI: [-0.0178, 0.1418]
+   p-value: 0.0997 +
+   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0620)
+   ~ Marginal effect (p < .10)
 
 3-WAY A/B/C (COHEN'S KAPPA)
 ================================================================================ 
@@ -252,11 +252,11 @@ Samples: 13 | Studies: (see main analysis summary)
    Non-significant
 
 9. published
-   Unpublished/Other: n=9, Published article: n=4
-   b = 0.0065 (SE = 0.0288)
-   95% CI: [-0.0742, 0.0872]
-   p-value: 0.8337 
-   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0065)
+   Unpublished/Other: n=11, Published article: n=2
+   b = 0.0236 (SE = 0.0184)
+   95% CI: [-0.0252, 0.0724]
+   p-value: 0.2619 
+   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0236)
    Non-significant
 
 SSP-ONLY (FISHER'S Z, R)
@@ -320,11 +320,11 @@ Samples: 24 | Studies: (see main analysis summary)
    Non-significant
 
 9. published
-   Unpublished/Other: n=12, Published article: n=12
-   b = 0.0366 (SE = 0.1033)
-   95% CI: [-0.1920, 0.2653]
-   p-value: 0.7300 
-   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0366)
+   Unpublished/Other: n=14, Published article: n=10
+   b = 0.0642 (SE = 0.1028)
+   95% CI: [-0.1605, 0.2888]
+   p-value: 0.5444 
+   Effect: Published articles (coded 1) show HIGHER continuity (b=0.0642)
    Non-significant
 ================================================================================ 
 Samples: 2 | Studies: (see main analysis summary)
@@ -367,14 +367,6 @@ Samples: 2 | Studies: (see main analysis summary)
    95% CI: [NA, NA]
    p-value: NA 
    Effect: Shorter follow-up intervals show HIGHER continuity (b=-0.0008)
-   Not estimable (insufficient samples)
-
-9. published
-   Unpublished/Other: n=1, Published article: n=1
-   b = 0.1307 (SE = 0.0000)
-   95% CI: [NA, NA]
-   p-value: NA 
-   Effect: Published articles (coded 1) show HIGHER continuity (b=0.1307)
    Not estimable (insufficient samples)
 
 

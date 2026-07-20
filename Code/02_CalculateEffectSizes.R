@@ -74,7 +74,7 @@ df_2way_sis <- df_2way_sis %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   )
 
@@ -140,7 +140,7 @@ df_2way_od <- df_2way_od %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   )
 
@@ -196,7 +196,7 @@ df_3way <- df_3way %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   ) %>%
   select(author_year, subsample, year, n, measures_used, parent_risk, child_risk, 
@@ -266,7 +266,7 @@ df_4way <- df_4way %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   ) %>%
   select(author_year, subsample, year, n, measures_used, parent_risk, child_risk, 
@@ -328,7 +328,7 @@ df_ssp_only <- df_ssp_only %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   )
 
@@ -368,7 +368,7 @@ df_aqs_only <- read.csv(file.path(data_dir, "data_aqs_only.csv")) %>%
     sample_risk_binary = ifelse(parent_risk == "Yes" | child_risk == "Yes", 1, 0),
     prior_meta_binary = ifelse(prior_meta_inclusion %in% c("Yes", "Fraley", "Pinquart", "Vice"), 1, 0),
     assessment_interval = adult_age_yr * 12 - infant_age_mo,  # months
-    published_binary = ifelse(!grepl("[*]", author), 1, 0),  # 1=Published (no asterisk), 0=Unpublished (has asterisk)
+    published_binary = ifelse(source %in% c("Article", "Chapter"), 1, 0),  # Effect-level source: 1=published, 0=unpublished
     year_continuous = year
   ) %>%
   filter(!is.na(fisher_z))

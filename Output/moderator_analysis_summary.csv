@@ -7,14 +7,14 @@
 "2way_sis","sample_risk","sample_risk_binary",26,0.071132,0.092859,7.4261,0.467307,-0.145915,0.28818
 "2way_sis","prior_meta","prior_meta_binary",26,-0.118133,0.064228,4.7064,0.128895,-0.286382,0.050117
 "2way_sis","assessment_interval","assessment_interval",26,0.000187,0.000608,3.6058,0.774767,-0.001576,0.00195
-"2way_sis","published","published_binary",26,0.050235,0.094166,12.3451,0.603179,-0.154301,0.254771
+"2way_sis","published","published_binary",26,0.066049,0.099208,11.4612,0.518738,-0.151238,0.283336
 "2way_od","year","year_continuous",13,-0.002113,0.004262,4.3614,0.643953,-0.01357,0.009343
 "2way_od","country","country_binary",13,-0.093386,0.016793,4.6312,0.003288,-0.13761,-0.049163
 "2way_od","age_t1","age_t1",13,0.005499,0.000856,1.4302,0.050275,-2.2e-05,0.011019
 "2way_od","age_t2","age_t2",13,0.004289,0.008174,2.7708,0.638793,-0.022983,0.031562
 "2way_od","sample_risk","sample_risk_binary",13,-0.051512,0.05028,3.5953,0.369512,-0.197533,0.094508
 "2way_od","assessment_interval","assessment_interval",13,-0.000152,0.000956,3.0796,0.883395,-0.003149,0.002845
-"2way_od","published","published_binary",13,0.045817,0.044686,4.1691,0.360986,-0.076292,0.167925
+"2way_od","published","published_binary",13,0.061994,0.029854,4.4287,0.099684,-0.017824,0.141812
 "3way","year","year_continuous",12,-0.014443,0.004623,2.7797,0.057924,-0.029837,0.00095
 "3way","country","country_binary",12,-0.170527,0.110552,2.1282,0.255588,-0.619766,0.278711
 "3way","age_t1","age_t1",12,-0.006641,0.006435,1.3612,0.450846,-0.051398,0.038115
@@ -28,7 +28,7 @@
 "4way","age_t2","age_t2",13,0.002047,0.004634,3.16,0.687171,-0.012286,0.01638
 "4way","sample_risk","sample_risk_binary",13,0.011433,0.032132,3.8297,0.740707,-0.079367,0.102233
 "4way","assessment_interval","assessment_interval",13,0.000118,0.000383,3.4069,0.775501,-0.001022,0.001259
-"4way","published","published_binary",13,0.006461,0.028793,3.9063,0.833687,-0.074243,0.087166
+"4way","published","published_binary",13,0.023589,0.018436,4.5659,0.26189,-0.025191,0.072369
 "ssp_only","year","year_continuous",24,-0.008196,0.005056,10.2162,0.135465,-0.01943,0.003038
 "ssp_only","country","country_binary",24,-0.226257,0.104872,10.1024,0.056081,-0.459605,0.007091
 "ssp_only","age_t1","age_t1",24,-0.006115,0.007751,1.5517,0.532648,-0.050636,0.038406
@@ -36,10 +36,9 @@
 "ssp_only","sample_risk","sample_risk_binary",24,0.073307,0.096773,7.6615,0.471391,-0.151579,0.298194
 "ssp_only","prior_meta","prior_meta_binary",24,-0.120579,0.070936,2.8276,0.193259,-0.354321,0.113163
 "ssp_only","assessment_interval","assessment_interval",24,0.000876,0.00081,4.8893,0.329695,-0.001219,0.002971
-"ssp_only","published","published_binary",24,0.036627,0.103333,10.5472,0.729979,-0.192004,0.265259
+"ssp_only","published","published_binary",24,0.064183,0.102805,11.6997,0.544402,-0.16045,0.288816
 "aqs_only","year","year_continuous",2,0.008169,0,NA,NA,NA,NA
 "aqs_only","age_t1","age_t1",2,0.010892,0,NA,NA,NA,NA
 "aqs_only","age_t2","age_t2",2,-0.010892,0,NA,NA,NA,NA
 "aqs_only","prior_meta","prior_meta_binary",2,-0.130709,0,NA,NA,NA,NA
 "aqs_only","assessment_interval","assessment_interval",2,-0.000838,0,NA,NA,NA,NA
-"aqs_only","published","published_binary",2,0.130709,0,NA,NA,NA,NA

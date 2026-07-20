@@ -24,8 +24,8 @@ I-squared: 58.11%
 
 PUBLICATION BIAS
 ----------------
-Egger's test p-value (published only): 0.5672 
-N published studies tested: 13
+Egger's test p-value (published only): 0.2918 
+N published studies tested: 10
 
 SENSITIVITY ANALYSIS (rho)
 --------------------------
